@@ -1,9 +1,31 @@
 import './Residents.css';
 
 import Grid from '../Grid';
+import { Col, Container, Row, Button } from 'reactstrap';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { onResidentsSelected } from '../../common/appSlicer';
 
 function Residents() {
+  const history = useHistory();
+  const dispatch = useDispatch();
+  let planets = useSelector((state) => state.app.planets);
+  const selectedPlanet = useSelector(state => state.app.selectedPlanet);
+  const [residents, setResidentsData] = useState([]);
+  useEffect(() => {
+    (async () => {
+      console.log('residents data selectedPlanet', selectedPlanet);
 
+      const residents = await Promise.all(selectedPlanet.residents.map((residentlink, index) => {
+        return fetch(residentlink)
+          .then(response => response.json());
+      }));
+      console.log('residents data', residents);
+      setResidentsData(residents);
+    })();
+  }, [selectedPlanet]);
   const data = {
     header: [
       { name: 'name', type: 'string' },
@@ -15,49 +37,34 @@ function Residents() {
       { name: 'birth_year', type: 'string' },
       { name: 'gender', type: 'string' },
     ],
-    values: [{
-      "name": "Luke Skywalker",
-      "height": "172",
-      "mass": "77",
-      "hair_color": "blond",
-      "skin_color": "fair",
-      "eye_color": "blue",
-      "birth_year": "19BBY",
-      "gender": "male",
-      "homeworld": "https://swapi.dev/api/planets/1/",
-      "films": [
-        "https://swapi.dev/api/films/1/",
-        "https://swapi.dev/api/films/2/",
-        "https://swapi.dev/api/films/3/",
-        "https://swapi.dev/api/films/6/"
-      ],
-      "species": [],
-      "vehicles": [
-        "https://swapi.dev/api/vehicles/14/",
-        "https://swapi.dev/api/vehicles/30/"
-      ],
-      "starships": [
-        "https://swapi.dev/api/starships/12/",
-        "https://swapi.dev/api/starships/22/"
-      ],
-      "created": "2014-12-09T13:50:51.644000Z",
-      "edited": "2014-12-20T21:17:56.891000Z",
-      "url": "https://swapi.dev/api/people/1/"
-    }],
+    values: residents,
     actions: [
-      // {
-      //   label: 'Go to Films',
-      //   action: (row) => { console.log(`redirect to grid with ${row.films.length} Films`) }
-      // },
-      // {
-      //   label: 'Go to Residents',
-      //   action: (row) => { console.log(`redirect to grid with ${row.residents.length} Residents`) }
-      // }
+      {
+        label: 'Details',
+        action: (row) => {
+          dispatch(onResidentsSelected(row));
+          history.push('/residents-details');
+        }
+      }
     ]
   }
 
   return (
     <div className='App'>
+      <Container style={{ marginTop: '30px' }}>
+        <Row xs="4">
+          <Col>
+            <h2 className='heading-text'>Residents</h2>
+          </Col>
+          <Col></Col>
+          <Col></Col>
+          <Col>
+            <Button onClick={() => {
+              history.goBack();
+            }}>Back</Button>
+          </Col>
+        </Row>
+      </Container>
       <Grid data={data} />
     </div>
   );

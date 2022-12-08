@@ -2,9 +2,10 @@ import './PlanetUpdateModal.css';
 import { useHistory } from "react-router-dom";
 import Grid from '../Grid';
 import { useDispatch, useSelector } from 'react-redux';
-import { onFilmsSelected, onPlanetSelected, onPlanetsUpdated, onResidentsSelected } from '../../common/appSlicer';
+import { onFilmsSelected, onPlanetsAdded, onPlanetSelected, onPlanetsUpdated, onResidentsSelected } from '../../common/appSlicer';
 import { useEffect, useState } from 'react';
 import { Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader } from 'reactstrap';
+import { Col, Container, Row } from 'reactstrap';
 
 function PlanetUpdateModal(props) {
   let history = useHistory();
@@ -15,17 +16,20 @@ function PlanetUpdateModal(props) {
 
   const selectedPlanet = useSelector((state) => state.app.selectedPlanet);
 
-  useEffect(()=>{setUpdatedPlanet(selectedPlanet)},[selectedPlanet]);
+  useEffect(() => {
+    console.log('INSIDE USEEFFECT 1', newPlanet);
+    setUpdatedPlanet(selectedPlanet)
+    console.log('INSIDE USEEFFECT 2', newPlanet);
+  }, [selectedPlanet]);
   const [newPlanet, setUpdatedPlanet] = useState(selectedPlanet);
 
   console.log('selectedPlanet', newPlanet);
-  if (!newPlanet) return null;
 
   return (
     <Modal isOpen={props.open}
       toggle={props.toggle}
     >
-      <ModalHeader>
+      <ModalHeader toggle={props.toggle} >
         Update Planet Details
       </ModalHeader>
       <ModalBody>
@@ -39,7 +43,7 @@ function PlanetUpdateModal(props) {
               name="planetName"
               placeholder="Planet Name"
               type="text"
-              value={newPlanet.name}
+              value={newPlanet?.name}
               onChange={(e) => setUpdatedPlanet({
                 ...newPlanet,
                 name: e.target.value,
@@ -53,7 +57,7 @@ function PlanetUpdateModal(props) {
               name="rotationPeriod"
               placeholder="Rotation Period"
               type="number"
-              value={newPlanet.rotation_period}
+              value={newPlanet?.rotation_period}
               onChange={(e) => setUpdatedPlanet({
                 ...newPlanet,
                 rotation_period: e.target.value,
@@ -67,7 +71,7 @@ function PlanetUpdateModal(props) {
               name="orbitalPeriod"
               placeholder="Orbital Period"
               type="number"
-              value={newPlanet.orbital_period}
+              value={newPlanet?.orbital_period}
               onChange={(e) => setUpdatedPlanet({
                 ...newPlanet,
                 'orbital_period': e.target.value,
@@ -81,7 +85,7 @@ function PlanetUpdateModal(props) {
               name="diameter"
               placeholder="Diameter"
               type="number"
-              value={newPlanet.diameter}
+              value={newPlanet?.diameter}
               onChange={(e) => setUpdatedPlanet({
                 ...newPlanet,
                 'diameter': e.target.value,
@@ -95,7 +99,7 @@ function PlanetUpdateModal(props) {
               name="surface_water"
               placeholder="Surface Water"
               type="number"
-              value={newPlanet.surface_water}
+              value={newPlanet?.surface_water}
               onChange={(e) => setUpdatedPlanet({
                 ...newPlanet,
                 'surface_water': e.target.value,
@@ -109,7 +113,7 @@ function PlanetUpdateModal(props) {
               name="climate"
               placeholder="Climate"
               type="text"
-              value={newPlanet.climate}
+              value={newPlanet?.climate}
               onChange={(e) => setUpdatedPlanet({
                 ...newPlanet,
                 'climate': e.target.value,
@@ -122,7 +126,7 @@ function PlanetUpdateModal(props) {
               id="gravity"
               name="gravity"
               placeholder="Gravity"
-              value={newPlanet.gravity}
+              value={newPlanet?.gravity}
               type="text"
               onChange={(e) => setUpdatedPlanet({
                 ...newPlanet,
@@ -137,7 +141,7 @@ function PlanetUpdateModal(props) {
               name="population"
               placeholder="Population"
               type="text"
-              value={newPlanet.population}
+              value={newPlanet?.population}
               onChange={(e) => setUpdatedPlanet({
                 ...newPlanet,
                 'population': e.target.value,
@@ -151,7 +155,7 @@ function PlanetUpdateModal(props) {
               name="select"
               placeholder="Terrain"
               type="select"
-              value={newPlanet.terrain}
+              value={newPlanet?.terrain}
               multiple
               onChange={(e) => setUpdatedPlanet({
                 ...newPlanet,
@@ -183,21 +187,36 @@ function PlanetUpdateModal(props) {
                 grassy hills, swamps, forests, mountains
               </option>
             </Input>
-            <Button
-              onClick={() => {
-                dispatch(onPlanetsUpdated(newPlanet));
-                props.toggle();
-              }}
-            >
-              Submit
-            </Button>
-            <Button
-              onClick={() => {
-                props.toggle();
-              }}
-            >
-              Cancel
-            </Button>
+            <Container style={{ marginTop: '30px' }}>
+              <Row xs="4">
+                <Col>
+                  <Button
+                    onClick={() => {
+                      if (props.operation === 'add') {
+                        dispatch(onPlanetsAdded(newPlanet));
+                      } else {
+                        dispatch(onPlanetsUpdated(newPlanet));
+                      }
+                      props.toggle();
+                    }}
+                  >
+                    Submit
+                  </Button>
+                </Col>
+                <Col></Col>
+                <Col></Col>
+                <Col>
+                  <Button
+                    onClick={() => {
+                      props.toggle();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Col>
+              </Row>
+            </Container>
+
           </FormGroup>
         </Form>
       </ModalBody>

@@ -2,6 +2,8 @@ import './PlanetDetails.css';
 
 import Grid from '../Grid';
 import { useSelector } from 'react-redux';
+import { Button, Col, Container, Row } from 'reactstrap';
+import { useHistory } from 'react-router-dom';
 
 function PlanetDetails() {
   const selectedPlanet = useSelector(state => state.app.selectedPlanet);
@@ -22,11 +24,24 @@ function PlanetDetails() {
     ]
   }
 
+  const history = useHistory();
+
   return (
     <div className='App'>
+      <Container style={{ marginTop: '30px' }}>
+        <Row xs="2">
+          <Col>
+            <h2 className='heading-text'>Planet Details</h2>
+          </Col>
+          <Col>
+            <Button onClick={() => history.goBack()}>Back</Button>
+          </Col>
+        </Row>
+      </Container>
       <Grid data={data} />
     </div>
   );
 }
+
 
 export default PlanetDetails;

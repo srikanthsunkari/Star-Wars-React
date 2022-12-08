@@ -1,4 +1,5 @@
 import './Grid.css';
+import { Button } from 'reactstrap';
 
 function Grid({ data: { header = [], values = [], actions = [] } }) {
   const rightAlignedStyle = {
@@ -20,7 +21,7 @@ function Grid({ data: { header = [], values = [], actions = [] } }) {
             {header.map((column) => <td  align={column.type == "number" ? "right" : "center"} key={column.name}>{row[column.name]}</td>)}
             {actions.length &&
               <td className='gridActions'>
-                {actions.map(({ label, action }) => <button onClick={() => action(row)}>{label}</button>)}
+                {actions.map(({ label, action }) => <Button onClick={() => action(row)}>{label}</Button>)}
               </td>
             }
           </tr>

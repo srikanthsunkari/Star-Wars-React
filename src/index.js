@@ -4,6 +4,7 @@ import './index.css';
 import Routers from './routers';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import store from './store'
 
